@@ -319,12 +319,12 @@ const Hero = () => {
       {/* 4. Ultra Pro Max Custom Precision Cursor Suite */}
       <div
         ref={cursorDotRef}
-        className="absolute top-0 left-0 z-50 pointer-events-none w-3 h-3 bg-red-600 rounded-full shadow-[0_0_15px_#E50914]"
+        className="hidden [@media(hover:hover)_and_(pointer:fine)]:block absolute top-0 left-0 z-50 pointer-events-none w-3 h-3 bg-red-600 rounded-full shadow-[0_0_15px_#E50914]"
       ></div>
 
       <div
         ref={cursorRingRef}
-        className="absolute top-0 left-0 z-50 pointer-events-none w-12 h-12 border border-red-600/60 rounded-full flex items-center justify-center backdrop-blur-[1px]"
+        className="hidden [@media(hover:hover)_and_(pointer:fine)]:block absolute top-0 left-0 z-50 pointer-events-none w-12 h-12 border border-red-600/60 rounded-full flex items-center justify-center backdrop-blur-[1px]"
       ></div>
 
       {/* --- NETFLIX-THEMED DEVELOPER NAVBAR --- */}

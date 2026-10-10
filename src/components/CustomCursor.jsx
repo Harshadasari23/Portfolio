@@ -1,17 +1,26 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 
 const CustomCursor = () => {
   const dotRef = useRef(null);
   const ringRef = useRef(null);
   const spotlightRef = useRef(null);
+  const [isPointerFine, setIsPointerFine] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    setIsPointerFine(mq.matches);
+    const handler = (e) => setIsPointerFine(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   useEffect(() => {
     const dot = dotRef.current;
     const ring = ringRef.current;
     const spotlight = spotlightRef.current;
 
-    if (!dot || !ring || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (!dot || !ring || !isPointerFine) return;
 
     gsap.set([dot, ring], { scale: 0.5, opacity: 0, transformOrigin: "50% 50%" });
 
@@ -57,7 +66,9 @@ const CustomCursor = () => {
       document.removeEventListener("mouseenter", handleMouseEnter);
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, []);
+  }, [isPointerFine]);
+
+  if (!isPointerFine) return null;
 
   return (
     <>

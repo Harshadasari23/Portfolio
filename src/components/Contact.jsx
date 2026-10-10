@@ -75,7 +75,7 @@ const Contact = () => {
   };
 
   return (
-    <section ref={ref} id="contact" className="bg-[#0b0b0b] w-full min-h-[100svh] relative overflow-x-clip flex items-end pt-24 md:pt-32 pb-0 border-t border-white/10">
+    <section ref={ref} id="contact" className="bg-[#0b0b0b] w-full min-h-[100svh] relative overflow-x-clip flex flex-col justify-end pt-24 md:pt-32 pb-0 border-t border-white/10">
       
       {/* Background Cinematic Red Ambient Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/15 rounded-full blur-[160px] pointer-events-none z-0"></div>
@@ -94,7 +94,7 @@ const Contact = () => {
       </motion.div>
 
       {/* Form Card Overlay */}
-      <div className="relative z-10 w-full flex justify-end items-end">
+      <div className="relative z-10 w-full flex justify-end mt-auto">
         <motion.div 
           initial={shouldReduceMotion ? false : { opacity: 0, y: 50 }}
           whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}

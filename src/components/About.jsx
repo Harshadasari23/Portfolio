@@ -60,8 +60,8 @@ const About = () => {
           ease: "power4.out",
           scrollTrigger: {
             trigger: section,
-            start: "top 70%",
-            toggleActions: "play none none reverse"
+            start: "top 75%",
+            once: true
           }
         }
       );

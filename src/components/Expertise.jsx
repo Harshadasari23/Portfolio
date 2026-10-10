@@ -87,8 +87,8 @@ const Expertise = () => {
           ease: "back.out(1.6)",
           scrollTrigger: {
             trigger: cards[0],
-            start: "top 78%",
-            toggleActions: "play none none reverse"
+            start: "top 80%",
+            once: true
           }
         }
       );
