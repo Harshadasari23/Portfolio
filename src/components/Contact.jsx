@@ -1,8 +1,11 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 const Contact = () => {
   const ref = useRef(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionStatus, setSubmissionStatus] = useState('');
+  const sheetsWebAppUrl = import.meta.env.VITE_GOOGLE_SHEETS_WEB_APP_URL;
   
   // React Form State tracking
   const [formData, setFormData] = useState({
@@ -31,18 +34,43 @@ const Contact = () => {
   };
 
   // Handle form submission logic
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.permission) {
-      alert("Please accept the contact permission checkbox.");
+      setSubmissionStatus('Please agree before sending your message.');
       return;
     }
 
-    console.log("Form Data Submitted Successfully:", formData);
-    alert(`Thanks ${formData.firstName}! Message captured successfully.`);
-    
-    setFormData({ firstName: '', lastName: '', email: '', message: '', permission: false });
+    if (!sheetsWebAppUrl) {
+      setSubmissionStatus('The contact form is not connected yet. Please email me directly using the link above.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmissionStatus('Sending your message...');
+
+    try {
+      await fetch(sheetsWebAppUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          message: formData.message,
+          source: 'Portfolio contact form'
+        })
+      });
+
+      setSubmissionStatus('Your message has been sent. Thank you for reaching out.');
+      setFormData({ firstName: '', lastName: '', email: '', message: '', permission: false });
+    } catch {
+      setSubmissionStatus('Unable to send your message right now. Please email me directly using the link above.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -76,15 +104,22 @@ const Contact = () => {
           {/* Subtle internal top crimson highlight glow */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-90"></div>
 
-          <div className="flex items-center justify-between mb-12 md:mb-16">
+          <div className="flex items-center justify-between mb-8 md:mb-10">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded bg-red-600/10 border border-red-600/30 text-xs font-mono uppercase tracking-widest text-red-500">
               <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-ping"></span>
-              <span>EPISODE 04 // GET IN TOUCH</span>
+              <span>EPISODE 04 // CONTACT HARSHA</span>
             </div>
             <span className="text-xs font-mono text-white/40 tracking-wider hidden md:block">
               // LET'S BUILD SOMETHING CINEMATIC
             </span>
           </div>
+
+          <nav aria-label="Direct contact links" className="flex flex-wrap gap-x-6 gap-y-3 mb-10 text-[10px] md:text-xs font-mono uppercase tracking-widest text-white/60">
+            <a href="tel:+9193392877828" className="hover:text-red-500 transition-colors">Call: +91- 93392877828</a>
+            <a href="mailto:dasariharshavardhan2004@gmail.com" className="hover:text-red-500 transition-colors">Email Harsha</a>
+            <a href="https://www.linkedin.com/in/dasari-harshavardhan-babu-193b88257" target="_blank" rel="noopener noreferrer" className="hover:text-red-500 transition-colors">LinkedIn</a>
+            <a href="https://github.com/Harshadasari23" target="_blank" rel="noopener noreferrer" className="hover:text-red-500 transition-colors">GitHub</a>
+          </nav>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-12 md:gap-16 w-full">
             <div className="flex flex-col md:flex-row gap-12 md:gap-20 w-full">
@@ -154,25 +189,26 @@ const Contact = () => {
                   style={{ accentColor: "#E50914" }}
                 />
                 <label htmlFor="permission" className="cursor-pointer max-w-[280px] leading-snug">
-                  I give permission to contact me at this email address.
+                  I agree to send my message to Harsha through this contact form.
                 </label>
               </div>
 
               {/* Right text & button */}
               <div className="flex-1 flex flex-col gap-8 text-xs text-white/50 font-light">
                 <p className="leading-relaxed max-w-[400px]">
-                  This site is protected by security protocols and industry-standard privacy guidelines.
+                  Your message will be sent to Harsha&apos;s contact spreadsheet.
                 </p>
                 <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-6">
                   <p className="max-w-[250px] leading-relaxed">
-                    Ready to start a project or collaboration? Send a direct signal.
+                    For projects or collaboration, send a direct signal.
                   </p>
                   
                   <button 
                     type="submit" 
+                    disabled={isSubmitting}
                     className="px-8 py-3.5 rounded bg-red-600 text-white font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-red-700 transition-all duration-300 group whitespace-nowrap shadow-[0_0_20px_rgba(229,9,20,0.6)] hover:scale-105"
                   >
-                    Send Message
+                    {isSubmitting ? 'Sending...' : 'Send Message'}
                     <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                     </svg>
@@ -180,6 +216,7 @@ const Contact = () => {
                 </div>
               </div>
             </div>
+            <p role="status" aria-live="polite" className="text-xs font-mono text-red-300/80">{submissionStatus}</p>
           </form>
 
         </motion.div>

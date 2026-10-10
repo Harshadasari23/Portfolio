@@ -4,71 +4,34 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Authentic Project Data based on your engineering portfolio
 const projectsData = [
   {
-    title: "Notice Hub",
-    category: "Full-Stack Architecture",
-    description: "Consolidates university announcements and streamlines real-time student communication with high uptime.",
-    tags: ["React", "Node.js", "Express", "MongoDB"],
-    match: "99%",
+    title: "Resident360 AI Content Automation",
+    category: "AI Automation | Workflow Automation | SEO",
+    description: "Developed n8n-based workflows connecting Google Sheets, AI language models, and content-processing steps to generate structured blog content and SEO metadata for Resident360.",
+    tags: ["n8n", "AI / LLM", "Google Sheets", "JavaScript", "JSON", "Markdown", "HTML"],
+    status: "PROJECT",
+    href: "https://resident360app.com/blogs",
+    actionLabel: "View Project",
     episode: "S01 E01"
   },
   {
-    title: "Multi-Tenant SaaS Platform",
-    category: "Cloud & Distributed Systems",
-    description: "Containerized enterprise SaaS featuring strict database isolation and granular role-based access control.",
-    tags: ["Docker", "PostgreSQL", "Node.js", "Express"],
-    match: "98%",
+    title: "Farm Project - Smart Agriculture Platform",
+    category: "Agriculture Technology | Web Development",
+    description: "A full-stack agricultural commodity trading platform with farmer, buyer, and admin accounts; contract and product management; market-price history and trends; government mandi prices; and transaction tracking.",
+    tags: ["React", "TypeScript", "Express", "Prisma", "PostgreSQL"],
+    status: "SOURCE REPOSITORY",
+    href: "https://github.com/Harshadasari23/Farm-Project",
+    actionLabel: "View on GitHub",
     episode: "S01 E02"
   },
   {
-    title: "Payment Gateway System",
-    category: "Fintech Architecture",
-    description: "Simulates complex transaction state management, webhook verification, and multi-method processing.",
-    tags: ["JavaScript", "PostgreSQL", "REST APIs", "Docker"],
-    match: "97%",
+    title: "Crop-to-Customer Marketplace",
+    category: "Agriculture Technology | Digital Marketplace",
+    description: "Concept: connect farmers with customers and market participants to support crop discovery, agricultural product access, and price transparency.",
+    tags: [],
+    status: "CONCEPT - NO LIVE PROJECT",
     episode: "S01 E03"
-  },
-  {
-    title: "Productivity Suite Extension",
-    category: "Client-Side Engineering",
-    description: "Custom Chrome extension built with Chrome APIs and advanced JavaScript for task automation and management.",
-    tags: ["JavaScript", "Chrome APIs", "Tailwind CSS", "HTML5"],
-    match: "99%",
-    episode: "S01 E04"
-  },
-  {
-    title: "AI & ML Diagnostic Engine",
-    category: "Artificial Intelligence",
-    description: "Intelligent data processing pipeline leveraging machine learning models and NLP workflows.",
-    tags: ["Python", "Machine Learning", "NLP", "AWS"],
-    match: "96%",
-    episode: "S01 E05"
-  },
-  {
-    title: "Algorithmic Problem Solver",
-    category: "Competitive Programming",
-    description: "Optimized data structure solutions across LeetCode, CodeChef, and GeeksforGeeks platforms.",
-    tags: ["Data Structures", "Algorithms", "C++", "JavaScript"],
-    match: "99%",
-    episode: "S01 E06"
-  },
-  {
-    title: "Portfolio Cinematics v2.6",
-    category: "UI/UX & Animation",
-    description: "Award-winning dark studio interactive portfolio featuring GSAP physics and responsive layouts.",
-    tags: ["React", "GSAP", "Tailwind CSS", "Framer Motion"],
-    match: "100%",
-    episode: "S01 E07"
-  },
-  {
-    title: "Cloud CI/CD Pipeline",
-    category: "DevOps & Infrastructure",
-    description: "Automated deployment workflows using GitHub Actions and containerized Docker environments.",
-    tags: ["Docker", "GitHub Actions", "CI/CD", "Render"],
-    match: "98%",
-    episode: "S01 E08"
   }
 ];
 
@@ -90,6 +53,7 @@ const Projects = () => {
       gsap.set(folderFrontRef.current, { transformOrigin: "bottom center" });
       
       const getGridPos = (index) => {
+        if (projectsData.length === 1) return { row: 1, col: 1 };
         let row, col;
         if (index < 3) { row = 0; col = index; }
         else if (index === 3) { row = 1; col = 0; }
@@ -281,17 +245,14 @@ const Projects = () => {
               className="hidden md:block absolute w-[80vw] md:w-[33vw] max-w-[380px] aspect-[16/10] will-change-transform"
               style={{ zIndex: 10 + i }}
             >
-              <div className="w-full h-full rounded-[24px] overflow-hidden border border-white/15 bg-[#141414]/95 backdrop-blur-2xl shadow-[0_25px_50px_rgba(0,0,0,0.9)] transition-all duration-500 group hover:scale-[1.04] hover:border-red-600 hover:shadow-[0_35px_80px_rgba(229,9,20,0.35)] hover:-translate-y-2 cursor-pointer relative z-10 p-7 flex flex-col justify-between">
+              <div className="w-full h-full rounded-[24px] overflow-hidden border border-white/15 bg-[#141414]/95 backdrop-blur-2xl shadow-[0_25px_50px_rgba(0,0,0,0.9)] transition-all duration-500 group hover:scale-[1.04] hover:border-red-600 hover:shadow-[0_35px_80px_rgba(229,9,20,0.35)] hover:-translate-y-2 relative z-10 p-7 flex flex-col justify-between">
                 
                 {/* Top Card Header */}
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-mono font-bold tracking-widest uppercase text-red-500 bg-red-600/10 px-2.5 py-1 rounded border border-red-600/20">
                     {project.episode}
                   </span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono text-red-400 font-bold">{project.match} Match</span>
-                    <span className="text-[10px] font-mono border border-white/30 px-1 text-white/70">HD</span>
-                  </div>
+                  <span className="text-[10px] font-mono text-red-400 font-bold text-right">{project.status}</span>
                 </div>
 
                 {/* Middle Title & Description */}
@@ -305,6 +266,16 @@ const Projects = () => {
                   <p className="text-xs text-white/70 font-light leading-relaxed line-clamp-2">
                     {project.description}
                   </p>
+                  {project.href && (
+                    <a
+                      href={project.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex mt-2 px-3 py-1.5 rounded bg-red-600 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-red-700 transition-colors"
+                    >
+                      {project.actionLabel}
+                    </a>
+                  )}
                 </div>
 
                 {/* Bottom Tech Tags */}
@@ -356,11 +327,21 @@ const Projects = () => {
                 <span className="text-[10px] font-mono font-bold tracking-widest text-red-500 bg-red-600/10 px-2 py-0.5 rounded">
                   {project.episode}
                 </span>
-                <span className="text-xs font-mono text-red-400 font-bold">{project.match} Match</span>
+                <span className="text-[9px] font-mono text-red-400 font-bold text-right">{project.status}</span>
               </div>
               <div className="space-y-2">
                 <h3 className="text-xl font-black text-white">{project.title}</h3>
                 <p className="text-xs text-white/70 font-light line-clamp-2">{project.description}</p>
+                {project.href && (
+                  <a
+                    href={project.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex mt-1 px-3 py-1.5 rounded bg-red-600 text-white text-[9px] font-bold uppercase tracking-widest"
+                  >
+                    {project.actionLabel}
+                  </a>
+                )}
               </div>
               <div className="flex flex-wrap gap-1 pt-2 border-t border-white/10">
                 {project.tags.slice(0, 3).map((tag, tIdx) => (

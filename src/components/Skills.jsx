@@ -6,40 +6,52 @@ gsap.registerPlugin(ScrollTrigger);
 
 const skillCategories = [
   { 
-    title: 'Frontend Engineering', 
-    desc: 'Crafting responsive and interactive user interfaces using React, JavaScript, HTML5, CSS3, and Tailwind CSS.', 
-    tag: 'UI / INTERACTION',
-    skills: ['React', 'JavaScript', 'Tailwind CSS', 'HTML5', 'CSS3'] 
+    title: 'AI & LLM Integration',
+    desc: 'Built AI-assisted content generation workflows using language models to produce structured content and SEO metadata.',
+    tag: 'AI / LLMs',
+    skills: ['Language models', 'Structured content', 'SEO metadata']
   },
   { 
-    title: 'Backend & Databases', 
-    desc: 'Building secure REST APIs, authentication flows, server-side applications, and high-performance database architectures.', 
-    tag: 'ARCHITECTURE',
-    skills: ['Node.js', 'Express', 'PostgreSQL', 'MongoDB', 'DQL'] 
+    title: 'Workflow Automation',
+    desc: 'Developed n8n workflows connecting Google Sheets, AI models, and content-processing nodes to automate repetitive tasks.',
+    tag: 'N8N AUTOMATION',
+    skills: ['n8n', 'Google Sheets', 'AI models', 'Content-processing nodes']
   },
   { 
-    title: 'AI & Machine Learning', 
-    desc: 'Developing intelligent applications leveraging NLP, generative AI workflows, computer vision, and LLM systems.', 
-    tag: 'INTELLIGENCE',
-    skills: ['NLP', 'Generative AI', 'Computer Vision', 'LLMs', 'AWS AI'] 
+    title: 'Python Development',
+    desc: 'Used Python to explore AI/ML concepts and develop practical programming projects.',
+    tag: 'PYTHON',
+    skills: ['Python', 'AI/ML concepts', 'Practical programming']
   },
   { 
-    title: 'Cloud & DevOps', 
-    desc: 'Deploying and scaling production-grade applications using Docker containers, GitHub Actions, and CI/CD pipelines.', 
-    tag: 'INFRASTRUCTURE',
-    skills: ['Docker', 'GitHub', 'CI/CD Pipelines', 'Render', 'Docker Hub'] 
+    title: 'Data Processing',
+    desc: 'Worked with JSON and structured data transformations to organize and process information across automation workflows.',
+    tag: 'STRUCTURED DATA',
+    skills: ['JSON', 'Structured data', 'Data transformations']
   },
   { 
-    title: 'Algorithmic Problem Solving', 
-    desc: 'Optimizing data structures and solving complex algorithmic challenges across competitive programming platforms.', 
-    tag: 'COMPETITIVE',
-    skills: ['Data Structures', 'Algorithms', 'LeetCode', 'CodeChef', 'GFG'] 
+    title: 'Web Technologies',
+    desc: 'Worked with HTML and Markdown to transform generated content into web-ready formats.',
+    tag: 'WEB TECHNOLOGIES',
+    skills: ['HTML', 'Markdown', 'Web-ready content']
   },
-  { 
-    title: 'Tools & Ecosystem', 
-    desc: 'Equipped with industry-grade instruments for version control, productivity extensions, and workflow management.', 
-    tag: 'PRODUCTIVITY',
-    skills: ['Git', 'Chrome APIs', 'Adobe Express', 'Google Cloud', 'VS Code'] 
+  {
+    title: 'Machine Learning',
+    desc: 'Developed academic AI/ML projects involving driver drowsiness detection and breast cancer prediction.',
+    tag: 'AI / ML PROJECTS',
+    skills: ['Driver drowsiness detection', 'Breast cancer prediction']
+  },
+  {
+    title: 'API & Tool Integration',
+    desc: 'Connected applications and workflow components to streamline data exchange and automated processes.',
+    tag: 'INTEGRATIONS',
+    skills: ['API integration', 'Application workflows', 'Data exchange']
+  },
+  {
+    title: 'SEO Content Automation',
+    desc: 'Built automated content-generation pipelines that prepare blog content, descriptions, and metadata for publishing.',
+    tag: 'SEO AUTOMATION',
+    skills: ['Blog content', 'Descriptions', 'Metadata', 'Publishing preparation']
   },
 ];
 
@@ -136,7 +148,7 @@ const Skills = () => {
         ScrollTrigger.create({
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=500%", 
+          end: `+=${(skillCategories.length - 1) * 125}%`,
           pin: true,
           scrub: 1,
           onUpdate: (self) => {
@@ -220,7 +232,7 @@ const Skills = () => {
                 {category.tag}
               </span>
               <span className="text-xs font-mono text-white/40">
-                [ 0{i + 1} / 06 ]
+                [ {String(i + 1).padStart(2, '0')} / {String(skillCategories.length).padStart(2, '0')} ]
               </span>
             </div>
 

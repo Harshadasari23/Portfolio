@@ -1,12 +1,44 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const technicalFocus = [
+  {
+    category: 'Programming',
+    skills: ['Python', 'JavaScript fundamentals']
+  },
+  {
+    category: 'Artificial Intelligence',
+    skills: ['AI/ML fundamentals', 'LLM integration', 'OpenAI API and language model workflows', 'AI-assisted content generation']
+  },
+  {
+    category: 'Workflow Automation',
+    skills: ['n8n', 'Workflow design', 'Process automation', 'Google Sheets integration', 'Automated content generation', 'SEO metadata processing']
+  },
+  {
+    category: 'Data Handling',
+    skills: ['JSON', 'Markdown', 'Data transformation', 'Structured data processing']
+  },
+  {
+    category: 'Web Technologies',
+    skills: ['HTML', 'CSS', 'API integration']
+  },
+  {
+    category: 'Data Science',
+    skills: ['Data analysis fundamentals', 'Pandas', 'NumPy', 'scikit-learn']
+  },
+  {
+    category: 'Development Practices',
+    skills: ['Debugging', 'Problem-solving', 'Visual Studio Code', 'Git', 'GitHub']
+  }
+];
+
 const About = () => {
   const sectionRef = useRef(null);
   const cardRefs = useRef([]);
+  const [selectedFocus, setSelectedFocus] = useState(technicalFocus[0]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -107,17 +139,17 @@ const About = () => {
             <div className="space-y-5 relative z-10">
               <h3 className="text-xs font-mono uppercase tracking-widest text-red-500 font-bold">Cast & Background</h3>
               <p className="text-lg md:text-xl font-medium text-white/90 leading-relaxed">
-                I am <span className="text-white font-bold drop-shadow">Dasari Venkata Ratna Sri Sushmita</span>, a B.Tech student in Artificial Intelligence and Machine Learning at Aditya Engineering College.
+                I&apos;m <span className="text-white font-bold drop-shadow">Harshavardhan Babu Dasari</span>, an aspiring AI Engineer and Python Developer with a B.Tech background in Artificial Intelligence and Data Science.
               </p>
               <p className="text-sm md:text-base text-white/60 font-light leading-relaxed">
-                My technical narrative bridges rigorous algorithmic problem-solving with full-stack software architecture, translating complex backend logic into seamless, high-performance interfaces.
+                My journey is driven by a passion for technology, continuous learning, and building practical solutions using AI, Python, and workflow automation.
               </p>
             </div>
             
             <div className="pt-8 flex flex-wrap gap-2 relative z-10">
-              <span className="px-3.5 py-1.5 rounded bg-white/5 border border-white/10 text-xs font-mono text-white/80">AI & ML</span>
-              <span className="px-3.5 py-1.5 rounded bg-white/5 border border-white/10 text-xs font-mono text-white/80">Full-Stack Development</span>
-              <span className="px-3.5 py-1.5 rounded bg-white/5 border border-white/10 text-xs font-mono text-white/80">System Architecture</span>
+              <span className="px-3.5 py-1.5 rounded bg-white/5 border border-white/10 text-xs font-mono text-white/80">AI / ML</span>
+              <span className="px-3.5 py-1.5 rounded bg-white/5 border border-white/10 text-xs font-mono text-white/80">Data Science</span>
+              <span className="px-3.5 py-1.5 rounded bg-white/5 border border-white/10 text-xs font-mono text-white/80">n8n Automation</span>
             </div>
           </div>
 
@@ -139,32 +171,32 @@ const About = () => {
             </div>
             
             <div className="space-y-5 relative z-10">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-red-500 font-bold">Milestones & Accolades</h3>
+              <h3 className="text-xs font-mono uppercase tracking-widest text-red-500 font-bold">Academic Profile</h3>
+              <div className="space-y-2">
+                <h4 className="text-xl md:text-2xl font-bold text-white">Bachelor of Technology (B.Tech)</h4>
+                <p className="text-sm text-red-300 font-medium">Artificial Intelligence &amp; Data Science</p>
+              </div>
               <ul className="space-y-3.5 text-sm text-white/80 font-light">
                 <li className="flex items-start gap-2.5">
                   <span className="text-red-500 font-bold">&#8250;</span>
-                  <span>National Semi-Finalist in <strong className="text-white">Flipkart GRiD 7.0</strong> competition.</span>
+                  <span><strong className="text-white">Degree:</strong> Bachelor of Technology</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-red-500 font-bold">&#8250;</span>
-                  <span>Member of the elite <strong className="text-white">AlgoUniversity Tech Fellowship</strong> for advanced data structures.</span>
+                  <span><strong className="text-white">Specialization:</strong> Artificial Intelligence and Data Science</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-red-500 font-bold">&#8250;</span>
-                  <span>Certified <strong className="text-white">GitHub Foundations</strong> & <strong className="text-white">AWS Certified AI Practitioner</strong>.</span>
+                  <span><strong className="text-white">Academic Focus:</strong> Artificial Intelligence, Machine Learning, Python Programming, Data Science, and Software Development.</span>
                 </li>
               </ul>
-            </div>
-            
-            <div className="pt-6 font-mono text-xs text-white/40 relative z-10">
-              // SEASON_01 HIGHLIGHTS
             </div>
           </div>
 
           {/* Card 3: Technical Ecosystem (Span 12) */}
           <div
             ref={addToRefs}
-            className="md:col-span-12 p-8 md:p-12 bg-[#141414]/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 hover:border-red-600/60 transition-all duration-500 overflow-hidden relative group"
+            className="md:col-span-12 p-8 md:p-12 bg-[#141414]/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl flex flex-col gap-7 hover:border-red-600/60 transition-all duration-500 overflow-hidden relative group"
           >
             {/* Real-time mouse hover spotlight highlight */}
             <div 
@@ -175,19 +207,36 @@ const About = () => {
             ></div>
 
             <div className="space-y-2 text-left relative z-10">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-red-500 font-bold">Production Tech Stack</h3>
-              <p className="text-base md:text-lg font-semibold text-white">Equipped with industry-grade instruments for robust scaling.</p>
+              <h3 className="text-xs font-mono uppercase tracking-widest text-red-500 font-bold">Technical Focus</h3>
+              <p className="text-base md:text-lg font-semibold text-white">Select a category to explore the skills and tools.</p>
             </div>
             
-            <div className="flex flex-wrap items-center gap-3 relative z-10">
-              {['React', 'Node.js', 'Express', 'PostgreSQL', 'MongoDB', 'Docker', 'JavaScript'].map((tech, idx) => (
-                <span
-                  key={idx}
-                  className="px-4 py-2 rounded bg-white/[0.04] border border-white/10 text-xs font-mono uppercase tracking-wider text-white shadow-inner hover:bg-red-600/20 hover:border-red-600/40 hover:scale-105 transition-all"
+            <div className="flex flex-wrap gap-2 relative z-10" role="group" aria-label="Technical focus categories">
+              {technicalFocus.map((item) => (
+                <button
+                  key={item.category}
+                  type="button"
+                  onClick={() => setSelectedFocus(item)}
+                  aria-pressed={selectedFocus.category === item.category}
+                  className={`px-4 py-2 rounded border text-xs md:text-sm font-mono tracking-wide transition-all ${selectedFocus.category === item.category ? 'bg-red-600/20 border-red-600/60 text-white' : 'bg-white/[0.04] border-white/10 text-white/70 hover:bg-red-600/10 hover:border-red-600/40 hover:text-white'}`}
                 >
-                  {tech}
-                </span>
+                  {item.category}
+                </button>
               ))}
+            </div>
+
+            <div className="relative z-10 border-t border-white/10 pt-5" aria-live="polite">
+              <h4 className="text-sm font-mono uppercase tracking-widest text-red-400 mb-4">{selectedFocus.category}</h4>
+              <div className="flex flex-wrap gap-2.5">
+                {selectedFocus.skills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="px-3.5 py-2 rounded bg-white/[0.04] border border-white/10 text-xs font-mono tracking-wide text-white/80"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 

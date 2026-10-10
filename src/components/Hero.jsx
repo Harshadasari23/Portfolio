@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import pictureImg from '../assets/Portfolio/picture.png';
+import harshaPortrait from '../assets/Harsha.jpeg';
 
 const Hero = () => {
   const sectionRef = useRef(null);
@@ -12,10 +12,10 @@ const Hero = () => {
   const contentRef = useRef(null);
 
   const developerRoles = [
-    'FEATURE FILM // FULL-STACK ARCHITECT',
-    'ORIGINAL SERIES // AI & ML SPECIALIST',
-    'BLOCKBUSTER // DISTRIBUTED SYSTEMS',
-    'ACCLAIMED // ALGORITHMIC PROBLEM SOLVER'
+    'AI ENGINEER // PYTHON DEVELOPER',
+    'ARTIFICIAL INTELLIGENCE // DATA SCIENCE',
+    'WORKFLOW AUTOMATION // N8N',
+    'SOFTWARE DEVELOPMENT // PYTHON'
   ];
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const Hero = () => {
     if (!section || !card || !content) return;
 
     // --- GSAP CINEMATIC ENTRANCE ANIMATION ---
-    const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+    const tl = gsap.timeline({ defaults: { ease: "power4.out" }, paused: true });
 
     tl.fromTo(
       section.querySelector('header'),
@@ -44,6 +44,14 @@ const Hero = () => {
       { scale: 1, opacity: 1, rotationY: 0, rotationX: 0, duration: 1.4, ease: "back.out(1.2)" },
       "-=0.9"
     );
+
+    const entranceObserver = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        tl.play();
+        entranceObserver.disconnect();
+      }
+    }, { threshold: 0.1 });
+    entranceObserver.observe(section);
 
     // --- MOUSE PHYSICS & SPOTLIGHT TRACKING ---
     gsap.set([cursorDotRef.current, cursorRingRef.current], {
@@ -125,6 +133,8 @@ const Hero = () => {
     section.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
+      entranceObserver.disconnect();
+      tl.kill();
       section.removeEventListener("mousemove", handleMouseMove);
       section.removeEventListener("mouseenter", handleMouseEnter);
       section.removeEventListener("mouseleave", handleMouseLeave);
@@ -133,6 +143,7 @@ const Hero = () => {
 
   return (
     <section
+      id="home"
       ref={sectionRef}
       className="relative w-full h-screen bg-[#050505] overflow-hidden flex flex-col justify-between select-none cursor-none"
     >
@@ -177,13 +188,13 @@ const Hero = () => {
         <div className="hero-anim-item flex items-center justify-between w-full">
           <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded bg-black/80 backdrop-blur-2xl border border-red-600/40 text-xs font-mono uppercase tracking-widest text-white shadow-2xl">
             <span className="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
-            <span className="text-red-500 font-bold tracking-wider">NETFLIX DEVELOPER SERIES</span>
+            <span className="text-red-500 font-bold tracking-wider">AI ENGINEER SERIES</span>
             <span className="text-white/40">|</span>
-            <span className="text-white/80">SEASONS 2024 - 2026</span>
+            <span className="text-white/80">PYTHON // AI & DATA SCIENCE</span>
           </div>
           <div className="hidden md:flex items-center gap-2 text-xs font-mono text-white/50 tracking-wider">
-            <span className="px-2 py-0.5 border border-white/20 rounded bg-black/40">FULL-STACK 4K</span>
-            <span className="px-2 py-0.5 border border-white/20 rounded bg-black/40">AI / ML CERTIFIED</span>
+            <span className="px-2 py-0.5 border border-white/20 rounded bg-black/40">AI / ML</span>
+            <span className="px-2 py-0.5 border border-white/20 rounded bg-black/40">N8N AUTOMATION</span>
           </div>
         </div>
 
@@ -194,27 +205,27 @@ const Hero = () => {
           <div className="lg:col-span-5 flex flex-col items-start space-y-5 text-left">
             
             <div className="hero-anim-item flex items-center gap-3">
-              <span className="px-2.5 py-0.5 bg-red-600 text-white font-black text-xs rounded tracking-widest shadow-[0_0_20px_rgba(229,9,20,0.8)] animate-pulse">TOP 1%</span>
-              <span className="text-white/80 text-xs font-mono tracking-widest uppercase">Software Engineer & Problem Solver</span>
+              <span className="px-2.5 py-0.5 bg-red-600 text-white font-black text-xs rounded tracking-widest shadow-[0_0_20px_rgba(229,9,20,0.8)] animate-pulse">AI / ML</span>
+              <span className="text-white/80 text-xs font-mono tracking-widest uppercase">AI Engineer / Python Developer</span>
             </div>
 
             <h1 className="hero-anim-item text-5xl md:text-7xl font-black tracking-tighter text-white leading-[0.95] drop-shadow-[0_15px_30px_rgba(0,0,0,0.9)]">
-              SUSHMITA <br />
+              HARSHA <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-600 to-red-700 drop-shadow-[0_0_35px_rgba(220,38,38,0.5)]">
-                DEV.ENGINE
+                AI ENGINEER
               </span>
             </h1>
 
-            <div className="hero-anim-item flex items-center gap-3 text-xs font-mono text-red-400 font-bold">
-              <span className="px-2 py-0.5 bg-red-500/10 border border-red-500/30 rounded text-red-500">99.9% Uptime</span>
+            <div className="hero-anim-item flex flex-wrap items-center gap-2 text-xs font-mono text-red-400 font-bold">
+              <span>Python</span>
               <span className="text-white/40">•</span>
-              <span>React • Node.js • PostgreSQL</span>
+              <span>AI / ML</span>
               <span className="text-white/40">•</span>
-              <span className="text-white/70">Docker & Cloud</span>
+              <span className="text-white/70">Data Science • n8n</span>
             </div>
 
             <p className="hero-anim-item text-sm md:text-base text-white/80 font-light leading-relaxed max-w-md drop-shadow">
-              Architecting robust full-stack systems, building scalable multi-tenant SaaS platforms, and engineering cutting-edge AI integrations.
+              AI Engineer and Python Developer focused on artificial intelligence, data science, workflow automation, and software development.
             </p>
 
             {/* Action Button Set */}
@@ -260,15 +271,17 @@ const Hero = () => {
                   className="absolute inset-[-50%] w-[200%] h-[200%] bg-gradient-to-tr from-transparent via-white/10 to-transparent pointer-events-none transform-gpu z-40"
                 ></div>
 
-                {/* Netflix Series Tag */}
+                {/* Harsha portrait */}
                 <div className="absolute top-6 left-6 z-30 px-3 py-1 bg-red-600 text-white font-mono text-[10px] font-bold tracking-widest rounded shadow-xl">
-                  FEATURED DEV
+                  HARSHA DASARI
                 </div>
 
                 <img
-                  src={pictureImg}
-                  alt="Developer Portrait"
-                  className="w-full h-[330px] md:h-[390px] object-cover rounded-xl filter contrast-125 brightness-105 group-hover:scale-[1.02] transition-transform duration-500"
+                  src={harshaPortrait}
+                  alt="Harshavardhan Babu Dasari"
+                  className="w-full h-[330px] md:h-[390px] rounded-xl object-cover object-center brightness-105 group-hover:scale-[1.02] transition-transform duration-500"
+                  loading="eager"
+                  decoding="async"
                 />
               </div>
             </div>
@@ -277,9 +290,9 @@ const Hero = () => {
           {/* Right Side: Technical Specs & Stack */}
           <div className="hero-anim-item lg:col-span-3 flex flex-col items-start lg:items-end space-y-4 text-left lg:text-right">
             <div className="p-5 bg-black/80 backdrop-blur-2xl border border-white/15 rounded-xl shadow-2xl max-w-xs">
-              <h3 className="text-xs font-mono uppercase tracking-widest text-red-500 font-bold mb-2">Core Stack & Awards</h3>
+              <h3 className="text-xs font-mono uppercase tracking-widest text-red-500 font-bold mb-2">Focus Areas</h3>
               <p className="text-xs text-white/80 leading-relaxed font-light">
-                Flipkart GRiD 7.0 Semi-Finalist, AlgoUniversity Tech Fellow, GitHub Foundations Certified.
+                Artificial intelligence, data science, n8n automation, and software development.
               </p>
             </div>
           </div>
@@ -288,8 +301,8 @@ const Hero = () => {
 
         {/* Bottom Cinematic Ticker */}
         <div className="hero-anim-item flex items-center justify-between text-xs font-mono text-white/50 tracking-widest uppercase">
-          <span>ENGINEERED FOR SCALABILITY</span>
-          <span>[ PORTFOLIO RELEASE v2.6 ]</span>
+          <span>AI ENGINEER // PYTHON DEVELOPER</span>
+          <span>[ HARSHAVARDHAN BABU DASARI ]</span>
         </div>
       </div>
 
@@ -305,9 +318,9 @@ const Hero = () => {
       ></div>
 
       {/* --- NETFLIX-THEMED DEVELOPER NAVBAR --- */}
-      <header className="absolute top-0 left-0 z-50 w-full max-w-7xl mx-auto px-6 md:px-12 py-6 flex items-center justify-between pointer-events-auto">
+      <header className="absolute top-0 left-0 z-50 w-full max-w-7xl mx-auto px-6 md:px-6 lg:px-12 py-6 flex items-center justify-between pointer-events-auto">
         <div className="text-2xl font-black text-red-600 tracking-tighter flex items-center gap-2 drop-shadow-[0_2px_15px_rgba(229,9,20,0.9)]">
-          SUSHMITA<span className="w-1.5 h-1.5 rounded-full bg-white inline-block"></span>
+          HARSHA<span className="w-1.5 h-1.5 rounded-full bg-white inline-block"></span>
         </div>
         <nav className="hidden md:flex items-center gap-8 text-xs font-mono uppercase tracking-widest text-white/80">
           <a href="#home" className="hover:text-red-500 transition-colors">Home</a>
@@ -315,10 +328,11 @@ const Hero = () => {
           <a href="#expertise" className="hover:text-red-500 transition-colors">Expertise</a>
           <a href="#skills" className="hover:text-red-500 transition-colors">Skills</a>
           <a href="#projects" className="hover:text-red-500 transition-colors">Projects</a>
+          <a href="#experience" className="hover:text-red-500 transition-colors">Experience</a>
           <a href="#contact" className="hover:text-red-500 transition-colors">Contact</a>
         </nav>
         <a
-          href="#hire"
+          href="#contact"
           className="px-5 py-2 rounded bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(229,9,20,0.6)] hover:scale-105 active:scale-95"
         >
           Hire Me

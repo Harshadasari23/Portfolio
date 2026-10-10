@@ -15,11 +15,11 @@ const MinimalPreloader = ({ onComplete }) => {
     tl.set(preloaderRef.current, { autoAlpha: 1 })
       .fromTo(
         contentRef.current,
-        { scale: 0.95, opacity: 0, filter: "blur(8px)" },
-        { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.8, ease: "power3.out" }
+        { scale: 1.6, z: 350, opacity: 0, filter: "blur(16px)" },
+        { scale: 1, z: 0, opacity: 1, filter: "blur(0px)", duration: 2.2, ease: "power2.out" }
       )
       .to(contentRef.current, {
-        scale: 1.05,
+        scale: 0.85,
         opacity: 0,
         filter: "blur(10px)",
         duration: 0.4,
@@ -37,17 +37,15 @@ const MinimalPreloader = ({ onComplete }) => {
     <div
       ref={preloaderRef}
       className="fixed inset-0 z-[9999] bg-[#050505] flex items-center justify-center select-none overflow-hidden"
+      style={{ perspective: '1200px' }}
     >
       <div ref={contentRef} className="flex flex-col items-center gap-4">
         {/* Minimal Red Indicator Dot */}
-        <div className="w-2.5 h-2.5 rounded-full bg-red-600 animate-ping"></div>
-
-        {/* Minimal Typography */}
         <h1 
-          className="text-2xl md:text-3xl font-black uppercase tracking-[0.3em] text-white"
+          className="px-4 text-center text-2xl md:text-3xl font-black tracking-[0.1em] text-white"
           style={{ fontFamily: "'Bebas Neue', 'Impact', sans-serif" }}
         >
-          SUSHMITA
+          Harsha Dasari
         </h1>
       </div>
     </div>

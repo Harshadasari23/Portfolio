@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Footer = () => {
   return (
     <footer className="bg-[#050505] text-white py-16 px-6 md:px-12 border-t border-white/10 select-none relative z-10">
@@ -9,10 +7,10 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 pb-12 border-b border-white/10">
           <div className="space-y-2">
             <div className="text-2xl font-black text-red-600 tracking-tighter flex items-center gap-2 drop-shadow-[0_2px_15px_rgba(220,38,38,0.9)]">
-              SUSHMITA<span className="w-1.5 h-1.5 rounded-full bg-white inline-block"></span>
+              HARSHA<span className="w-1.5 h-1.5 rounded-full bg-white inline-block"></span>
             </div>
             <p className="text-xs font-mono text-white/50 tracking-widest uppercase">
-              // NETFLIX DEVELOPER SERIES &bull; SEASON 2026
+              // AI ENGINEER &bull; PYTHON DEVELOPER
             </p>
           </div>
 
@@ -23,6 +21,7 @@ const Footer = () => {
             <a href="#expertise" className="hover:text-red-500 transition-colors">Expertise</a>
             <a href="#skills" className="hover:text-red-500 transition-colors">Skills</a>
             <a href="#projects" className="hover:text-red-500 transition-colors">Projects</a>
+            <a href="#experience" className="hover:text-red-500 transition-colors">Experience</a>
             <a href="#contact" className="hover:text-red-500 transition-colors">Contact</a>
           </nav>
         </div>
@@ -31,39 +30,43 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 text-xs font-mono text-white/60">
           <div className="flex items-center gap-6">
             <a 
-              href="https://github.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
+              href="mailto:dasariharshavardhan2004@gmail.com"
               className="hover:text-red-500 transition-colors uppercase tracking-wider"
             >
-              GitHub //
+              Email //
+            </a>
+            <a
+              href="tel:+9193392877828"
+              className="hover:text-red-500 transition-colors uppercase tracking-wider"
+            >
+              +91- 93392877828 //
             </a>
             <a 
-              href="https://linkedin.com" 
+              href="https://www.linkedin.com/in/dasari-harshavardhan-babu-193b88257"
               target="_blank" 
               rel="noopener noreferrer"
               className="hover:text-red-500 transition-colors uppercase tracking-wider"
             >
               LinkedIn //
             </a>
-            <a 
-              href="https://leetcode.com" 
-              target="_blank" 
+            <a
+              href="https://github.com/Harshadasari23"
+              target="_blank"
               rel="noopener noreferrer"
               className="hover:text-red-500 transition-colors uppercase tracking-wider"
             >
-              LeetCode //
+              GitHub //
             </a>
           </div>
 
           <div className="text-white/40 tracking-widest uppercase">
-            LOCATION: ANDHRA PRADESH, IN
+            AI ENGINEER / PYTHON DEVELOPER
           </div>
         </div>
 
         {/* Bottom Copyright & Cinematic Tagline */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t border-white/5 text-[11px] font-mono text-white/40 uppercase tracking-widest">
-          <p>&copy; {new Date().getFullYear()} Dasari Venkata Ratna Sri Sushmita. All Rights Reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Harshavardhan Babu Dasari. All Rights Reserved.</p>
           <p className="text-red-500/80">STREAMING WORLDWIDE &bull; BUILT WITH REACT & GSAP</p>
         </div>
 

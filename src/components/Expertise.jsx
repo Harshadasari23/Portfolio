@@ -7,41 +7,52 @@ gsap.registerPlugin(ScrollTrigger);
 const expertiseData = [
   {
     number: "01",
-    title: "Frontend Development",
-    text: "Crafting responsive, high-fidelity user interfaces with React, modern JavaScript, Tailwind CSS, and buttery smooth GSAP motion interactions.",
-    tag: "UI / UX & INTERACTION",
-    gradient: "from-[#1f0a0c] via-[#121212] to-[#0a0a0a]"
+    title: "AI & Automation",
+    text: "Building AI-powered workflows using n8n and LLMs.",
+    tag: "N8N & LLMS"
   },
   {
     number: "02",
-    title: "Backend Development",
-    text: "Architecting secure REST APIs, enterprise authentication pipelines, and scalable database schemas across PostgreSQL and MongoDB.",
-    tag: "API & ARCHITECTURE",
-    gradient: "from-[#1a0809] via-[#111111] to-[#090909]"
+    title: "Python Development",
+    text: "Developing Python-based applications and AI projects.",
+    tag: "PYTHON"
   },
   {
     number: "03",
-    title: "AI & Machine Learning",
-    text: "Integrating production-grade LLM workflows, predictive machine learning pipelines, and computer vision systems backed by AWS AI certification.",
-    tag: "INTELLIGENCE & ML",
-    gradient: "from-[#220a0d] via-[#131313] to-[#0a0a0a]"
+    title: "Machine Learning",
+    text: "Implementing ML models for prediction and classification.",
+    tag: "MACHINE LEARNING"
   },
   {
     number: "04",
-    title: "Cloud & Deployment",
-    text: "Deploying resilient, containerized multi-tenant services using Docker, GitHub Actions CI/CD workflows, and optimized cloud hosting.",
-    tag: "DEVOPS & CLOUD",
-    gradient: "from-[#1d090b] via-[#101010] to-[#080808]"
+    title: "Data Processing",
+    text: "Handling structured data using JSON and Python libraries.",
+    tag: "DATA & JSON"
+  },
+  {
+    number: "05",
+    title: "Web Technologies",
+    text: "Working with HTML, Markdown, and API integrations.",
+    tag: "WEB & APIS"
+  },
+  {
+    number: "06",
+    title: "SEO Automation",
+    text: "Automating blog content generation and metadata processing.",
+    tag: "CONTENT AUTOMATION"
   }
 ];
 
 const Expertise = () => {
   const containerRef = useRef(null);
   const cardRefs = useRef([]);
+  const cardVisualRefs = useRef([]);
 
   useEffect(() => {
     const cards = cardRefs.current;
-    if (!cards.length) return;
+    const cardVisuals = cardVisualRefs.current;
+    const container = containerRef.current;
+    if (!cards.length || !cardVisuals.length) return;
 
     cards.forEach((card, index) => {
       if (index === cards.length - 1) return; // Keep the top-most card fully focused
@@ -60,6 +71,25 @@ const Expertise = () => {
       });
     });
 
+    gsap.fromTo(
+      cardVisuals,
+      { y: 90, rotationX: -14, opacity: 0, filter: "blur(10px)", transformPerspective: 900 },
+      {
+        y: 0,
+        rotationX: 0,
+        opacity: 1,
+        filter: "blur(0px)",
+        duration: 0.8,
+        stagger: 0.12,
+        ease: "back.out(1.6)",
+        scrollTrigger: {
+          trigger: cards[0],
+          start: "top 78%",
+          toggleActions: "play none none reverse"
+        }
+      }
+    );
+
     // Magnetic mouse highlight per card
     const handleMouseMove = (e, card) => {
       const rect = card.getBoundingClientRect();
@@ -77,7 +107,9 @@ const Expertise = () => {
     });
 
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      ScrollTrigger.getAll().forEach((trigger) => {
+        if (cards.includes(trigger.trigger) || cardVisuals.includes(trigger.trigger) || trigger.trigger === container) trigger.kill();
+      });
     };
   }, []);
 
@@ -115,7 +147,7 @@ const Expertise = () => {
             </h2>
           </div>
           <p className="text-white/60 text-xs md:text-sm font-light leading-relaxed max-w-xs">
-            Merging full-stack engineering, scalable microservices, and AI integrations into production-ready platforms.
+            Practical capabilities across AI, Python development, machine learning, data processing, web technologies, and SEO automation.
           </p>
         </div>
 
@@ -125,12 +157,16 @@ const Expertise = () => {
             <div
               key={index}
               ref={addToRefs}
-              className={`sticky w-full p-6 md:p-8 rounded-2xl bg-gradient-to-br ${item.gradient} backdrop-blur-2xl border border-white/10 shadow-[0_20px_45px_rgba(0,0,0,0.85)] flex flex-col justify-between min-h-[230px] md:min-h-[250px] transform-gpu transition-all overflow-hidden group hover:border-red-600/50`}
+              className="sticky w-full transform-gpu"
               style={{
                 zIndex: index + 1,
                 top: `${95 + index * 16}px`
               }}
             >
+              <div
+                ref={(element) => { cardVisualRefs.current[index] = element; }}
+                className="relative w-full p-6 md:p-8 rounded-2xl bg-[#141414]/90 backdrop-blur-2xl border border-white/10 shadow-[0_20px_45px_rgba(0,0,0,0.85)] flex flex-col justify-between min-h-[230px] md:min-h-[250px] transform-gpu transition-all overflow-hidden group hover:border-red-600/50"
+              >
               {/* Dynamic Mouse Spotlight Highlight */}
               <div 
                 className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-0"
@@ -168,6 +204,7 @@ const Expertise = () => {
 
               {/* Subtle Red Corner Dot */}
               <div className="absolute bottom-4 right-4 w-1.5 h-1.5 rounded-full bg-red-600 group-hover:shadow-[0_0_10px_#E50914] z-10 transition-all"></div>
+              </div>
             </div>
           ))}
         </div>
