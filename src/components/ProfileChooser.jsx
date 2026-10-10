@@ -10,7 +10,7 @@ const profiles = [
 ];
 
 const ProfileChooser = ({ onSelect }) => (
-  <section className="relative min-h-screen bg-[#050505] text-white flex items-center justify-center px-6 py-16 overflow-hidden">
+  <section className="relative min-h-[100svh] bg-[#050505] text-white flex items-center justify-center px-6 py-16 overflow-x-clip">
     <div className="absolute inset-0 bg-gradient-to-b from-[#120507] via-[#050505] to-black" />
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full bg-red-700/10 blur-[150px] pointer-events-none" />
 

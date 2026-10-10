@@ -11,7 +11,7 @@ const CustomCursor = () => {
     const ring = ringRef.current;
     const spotlight = spotlightRef.current;
 
-    if (!dot || !ring) return;
+    if (!dot || !ring || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
     gsap.set([dot, ring], { scale: 0.5, opacity: 0, transformOrigin: "50% 50%" });
 

@@ -1,11 +1,12 @@
 import { useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 
 const Contact = () => {
   const ref = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState('');
   const sheetsWebAppUrl = import.meta.env.VITE_GOOGLE_SHEETS_WEB_APP_URL;
+  const shouldReduceMotion = useReducedMotion();
   
   // React Form State tracking
   const [formData, setFormData] = useState({
@@ -74,14 +75,14 @@ const Contact = () => {
   };
 
   return (
-    <section ref={ref} id="contact" className="bg-[#0b0b0b] w-full min-h-screen relative overflow-hidden flex items-end pt-32 pb-0 border-t border-white/10 select-none">
+    <section ref={ref} id="contact" className="bg-[#0b0b0b] w-full min-h-[100svh] relative overflow-x-clip flex items-end pt-24 md:pt-32 pb-0 border-t border-white/10">
       
       {/* Background Cinematic Red Ambient Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/15 rounded-full blur-[160px] pointer-events-none z-0"></div>
 
       {/* Huge Background Parallax Netflix Watermark Text */}
       <motion.div 
-        style={{ y }}
+        style={{ y: shouldReduceMotion ? 0 : y }}
         className="absolute top-0 left-0 w-full h-full flex flex-col justify-start items-center overflow-hidden pointer-events-none z-0 pt-16 md:pt-12 opacity-10"
       >
         <h1 
@@ -95,11 +96,11 @@ const Contact = () => {
       {/* Form Card Overlay */}
       <div className="relative z-10 w-full flex justify-end items-end">
         <motion.div 
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="bg-[#141414]/95 backdrop-blur-2xl border-t border-l border-white/15 w-full md:w-[90%] lg:w-[82%] p-8 md:p-16 text-white flex flex-col justify-between rounded-tl-[3rem] shadow-[0_-25px_60px_rgba(0,0,0,0.9)] relative overflow-hidden"
+          initial={shouldReduceMotion ? false : { opacity: 0, y: 50 }}
+          whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.05, margin: "0px" }}
+          transition={shouldReduceMotion ? { duration: 0 } : { duration: 0.8, ease: "easeOut" }}
+          className="bg-[#141414]/95 backdrop-blur-2xl border-t border-l border-white/15 w-full md:w-[90%] lg:w-[82%] p-6 sm:p-8 md:p-16 text-white flex flex-col justify-between rounded-tl-[2rem] md:rounded-tl-[3rem] shadow-[0_-25px_60px_rgba(0,0,0,0.9)] relative overflow-hidden"
         >
           {/* Subtle internal top crimson highlight glow */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-90"></div>
@@ -130,33 +131,36 @@ const Contact = () => {
                   <input 
                     type="text" 
                     id="firstName" 
+                    autoComplete="given-name"
                     value={formData.firstName}
                     onChange={handleChange}
                     placeholder="First Name" 
                     required
-                    className="w-full bg-transparent border-b border-white/20 pb-3 text-lg focus:outline-none focus:border-red-600 transition-colors placeholder-white/40 font-medium rounded-none text-white"
+                    className="w-full min-h-11 bg-transparent border-b border-white/20 pb-3 text-lg focus:outline-none focus:border-red-600 transition-colors placeholder-white/40 font-medium rounded-none text-white"
                   />
                 </div>
                 <div className="relative">
                   <input 
                     type="text" 
                     id="lastName" 
+                    autoComplete="family-name"
                     value={formData.lastName}
                     onChange={handleChange}
                     placeholder="Last Name" 
                     required
-                    className="w-full bg-transparent border-b border-white/20 pb-3 text-lg focus:outline-none focus:border-red-600 transition-colors placeholder-white/40 font-medium rounded-none text-white"
+                    className="w-full min-h-11 bg-transparent border-b border-white/20 pb-3 text-lg focus:outline-none focus:border-red-600 transition-colors placeholder-white/40 font-medium rounded-none text-white"
                   />
                 </div>
                 <div className="relative">
                   <input 
                     type="email" 
                     id="email" 
+                    autoComplete="email"
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="Email Address" 
                     required
-                    className="w-full bg-transparent border-b border-white/20 pb-3 text-lg focus:outline-none focus:border-red-600 transition-colors placeholder-white/40 font-medium rounded-none text-white"
+                    className="w-full min-h-11 bg-transparent border-b border-white/20 pb-3 text-lg focus:outline-none focus:border-red-600 transition-colors placeholder-white/40 font-medium rounded-none text-white"
                   />
                 </div>
               </div>
@@ -170,7 +174,7 @@ const Contact = () => {
                     onChange={handleChange}
                     placeholder="Type your message here..." 
                     required
-                    className="w-full h-full min-h-[140px] bg-transparent border-b border-white/20 pb-3 text-lg focus:outline-none focus:border-red-600 transition-colors placeholder-white/40 font-medium resize-none rounded-none text-white"
+                    className="w-full h-full min-h-[160px] md:min-h-[140px] bg-transparent border-b border-white/20 pb-3 text-lg focus:outline-none focus:border-red-600 transition-colors placeholder-white/40 font-medium resize-y rounded-none text-white"
                   ></textarea>
                 </div>
               </div>
@@ -185,7 +189,7 @@ const Contact = () => {
                   id="permission" 
                   checked={formData.permission}
                   onChange={handleChange}
-                  className="mt-1 w-4 h-4 rounded-sm border-white/30 bg-transparent text-red-600 focus:ring-0 focus:ring-offset-0 cursor-pointer" 
+                  className="mt-1 w-5 h-5 shrink-0 rounded-sm border-white/30 bg-transparent text-red-600 focus:ring-0 focus:ring-offset-0 cursor-pointer" 
                   style={{ accentColor: "#E50914" }}
                 />
                 <label htmlFor="permission" className="cursor-pointer max-w-[280px] leading-snug">
@@ -206,7 +210,7 @@ const Contact = () => {
                   <button 
                     type="submit" 
                     disabled={isSubmitting}
-                    className="px-8 py-3.5 rounded bg-red-600 text-white font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-red-700 transition-all duration-300 group whitespace-nowrap shadow-[0_0_20px_rgba(229,9,20,0.6)] hover:scale-105"
+                    className="min-h-11 px-6 md:px-8 py-3.5 rounded bg-red-600 text-white font-bold uppercase tracking-widest text-xs flex items-center justify-center gap-3 hover:bg-red-700 transition-all duration-300 group whitespace-nowrap shadow-[0_0_20px_rgba(229,9,20,0.6)] hover:scale-105 disabled:opacity-60 disabled:hover:scale-100"
                   >
                     {isSubmitting ? 'Sending...' : 'Send Message'}
                     <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

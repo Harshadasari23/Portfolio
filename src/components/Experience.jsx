@@ -45,6 +45,8 @@ const Experience = () => {
 
   useEffect(() => {
     const context = gsap.context(() => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
       gsap.fromTo(
         cardRef.current,
         { y: 60, opacity: 0 },
@@ -69,7 +71,7 @@ const Experience = () => {
     <section
       id="experience"
       ref={sectionRef}
-      className="relative w-full bg-[#050505] text-white py-24 md:py-32 px-6 md:px-12 overflow-hidden"
+      className="relative w-full bg-[#050505] text-white py-20 md:py-32 px-6 md:px-12 overflow-x-clip"
     >
       <div className="absolute top-1/3 right-1/4 w-[420px] h-[420px] bg-red-600/10 rounded-full blur-[140px] pointer-events-none" />
 

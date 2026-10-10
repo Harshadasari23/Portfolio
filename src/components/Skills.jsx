@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -60,42 +60,60 @@ const Skills = () => {
   const cardsRef = useRef([]);
   const bgRefs = useRef([]);
   const textRefs = useRef([]);
+  const scrollFrameRef = useRef(null);
+  const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handleChange = (event) => setReducedMotion(event.matches);
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
 
   const handleScroll = (e) => {
-    if (window.innerWidth >= 769) return;
-    const container = e.target;
-    const center = container.scrollLeft + container.offsetWidth / 2;
-    
-    let activeIdx = 0;
-    let minDiff = Infinity;
-    
-    cardsRef.current.forEach((card, i) => {
-      if (!card) return;
-      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-      const diff = Math.abs(cardCenter - center);
-      if (diff < minDiff) {
-        minDiff = diff;
-        activeIdx = i;
-      }
-    });
+    if (window.innerWidth >= 769 || reducedMotion || scrollFrameRef.current !== null) return;
+    const container = e.currentTarget;
 
-    cardsRef.current.forEach((card, i) => {
-      if (card) {
-        gsap.to(card, { scale: i === activeIdx ? 1 : 0.9, duration: 0.4, ease: "power2.out", overwrite: "auto" });
-      }
-    });
-
-    bgRefs.current.forEach((bg, i) => {
-      if (bg) gsap.to(bg, { opacity: i === activeIdx ? 1 : 0, duration: 0.4, overwrite: "auto" });
-    });
+    scrollFrameRef.current = requestAnimationFrame(() => {
+      scrollFrameRef.current = null;
+      const center = container.scrollLeft + container.offsetWidth / 2;
     
-    textRefs.current.forEach((txt, i) => {
-      if (txt) gsap.to(txt, { opacity: i === activeIdx ? 1 : 0, duration: 0.4, overwrite: "auto" });
+      let activeIdx = 0;
+      let minDiff = Infinity;
+    
+      cardsRef.current.forEach((card, i) => {
+        if (!card) return;
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const diff = Math.abs(cardCenter - center);
+        if (diff < minDiff) {
+          minDiff = diff;
+          activeIdx = i;
+        }
+      });
+
+      cardsRef.current.forEach((card, i) => {
+        if (card) {
+          gsap.to(card, { scale: i === activeIdx ? 1 : 0.9, duration: 0.4, ease: "power2.out", overwrite: "auto" });
+        }
+      });
+
+      bgRefs.current.forEach((bg, i) => {
+        if (bg) gsap.to(bg, { opacity: i === activeIdx ? 1 : 0, duration: 0.4, ease: "power2.out", overwrite: "auto" });
+      });
+    
+      textRefs.current.forEach((txt, i) => {
+        if (txt) gsap.to(txt, { opacity: i === activeIdx ? 1 : 0, duration: 0.4, ease: "power2.out", overwrite: "auto" });
+      });
     });
   };
 
   useLayoutEffect(() => {
     let ctx = gsap.context(() => {
+      if (reducedMotion) {
+        gsap.set([...cardsRef.current, ...bgRefs.current, ...textRefs.current], { clearProps: 'all' });
+        return;
+      }
+
       let mm = gsap.matchMedia();
 
       mm.add("(min-width: 769px)", () => {
@@ -148,7 +166,7 @@ const Skills = () => {
         ScrollTrigger.create({
           trigger: sectionRef.current,
           start: "top top",
-          end: `+=${(skillCategories.length - 1) * 125}%`,
+          end: "+=500%",
           pin: true,
           scrub: 1,
           onUpdate: (self) => {
@@ -177,26 +195,30 @@ const Skills = () => {
 
     }, sectionRef);
 
-    return () => ctx.revert();
-  }, []);
+    return () => {
+      ctx.revert();
+      if (scrollFrameRef.current !== null) cancelAnimationFrame(scrollFrameRef.current);
+      scrollFrameRef.current = null;
+    };
+  }, [reducedMotion]);
 
   return (
     <section 
       id="skills"
       ref={sectionRef} 
-      className="relative w-full h-screen bg-[#0b0b0b] text-white overflow-hidden flex items-center justify-center md:[perspective:1000px] select-none"
+      className={`relative w-full ${reducedMotion ? 'min-h-[100svh] h-auto overflow-visible' : 'h-[100svh] md:h-screen overflow-hidden'} bg-[#0b0b0b] text-white flex items-center justify-center md:[perspective:1000px]`}
     >
       {/* Dynamic Netflix Dark Background Vignettes */}
       {skillCategories.map((_, i) => (
         <div 
           key={i}
           ref={el => bgRefs.current[i] = el}
-          className="absolute inset-0 z-0 pointer-events-none opacity-0 bg-gradient-to-tr from-black via-[#140203] to-black"
+          className={`absolute inset-0 z-0 pointer-events-none bg-gradient-to-tr from-black via-[#140203] to-black ${reducedMotion ? (i === 0 ? 'opacity-100' : 'hidden') : 'opacity-0'}`}
         />
       ))}
 
       {/* Massive Background Typography (Netflix Red & White Outline) */}
-      <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
+      {!reducedMotion && <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none">
         {skillCategories.map((_, i) => (
           <h1 
             key={`text-${i}`}
@@ -210,18 +232,18 @@ const Skills = () => {
             SKILLS
           </h1>
         ))}
-      </div>
+      </div>}
 
       {/* Carousel Container */}
       <div 
-        className="relative w-full h-full flex md:items-center md:justify-center z-10 md:[transform-style:preserve-3d] overflow-x-auto overflow-y-hidden md:overflow-visible snap-x snap-mandatory scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] items-center px-[10vw] md:px-0 gap-4 md:gap-0 touch-pan-x"
+        className={`relative w-full z-10 ${reducedMotion ? 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 items-stretch gap-4 px-6 md:px-12 py-16' : 'h-full flex md:items-center md:justify-center md:[transform-style:preserve-3d] overflow-x-auto overflow-y-hidden md:overflow-visible snap-x snap-mandatory scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] items-center px-[10vw] md:px-0 gap-4 md:gap-0 touch-pan-x'}`}
         onScroll={handleScroll}
       >
         {skillCategories.map((category, i) => (
           <div 
             key={i}
             ref={el => cardsRef.current[i] = el}
-            className="md:absolute relative shrink-0 snap-center w-[82vw] sm:w-[360px] md:w-[440px] h-[460px] md:h-[540px] rounded-[32px] p-8 md:p-10 bg-[#141414]/95 backdrop-blur-2xl border border-white/15 flex flex-col justify-between overflow-hidden group shadow-[0_30px_60px_rgba(0,0,0,0.9)] hover:border-red-600/80 transition-colors duration-500"
+            className={`${reducedMotion ? 'relative w-full min-h-[400px]' : 'md:absolute relative shrink-0 snap-center w-[82vw] sm:w-[360px] md:w-[440px] h-[460px] md:h-[540px]'} rounded-[32px] p-8 md:p-10 bg-[#141414]/95 backdrop-blur-2xl border border-white/15 flex flex-col justify-between overflow-hidden group shadow-[0_30px_60px_rgba(0,0,0,0.9)] hover:border-red-600/80 transition-colors duration-500`}
           >
             {/* Inner Red Glossy Reflection */}
             <div className="absolute inset-0 bg-gradient-to-tr from-red-600/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-20" />

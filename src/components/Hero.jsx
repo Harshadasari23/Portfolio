@@ -1,8 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import harshaPortrait from '../assets/Harsha.jpeg';
 
 const Hero = () => {
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const sectionRef = useRef(null);
   const cardRef = useRef(null);
   const glareRef = useRef(null);
@@ -45,13 +46,18 @@ const Hero = () => {
       "-=0.9"
     );
 
-    const entranceObserver = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        tl.play();
-        entranceObserver.disconnect();
-      }
-    }, { threshold: 0.1 });
-    entranceObserver.observe(section);
+    let entranceObserver;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      tl.progress(1).pause();
+    } else {
+      entranceObserver = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          tl.play();
+          entranceObserver.disconnect();
+        }
+      }, { threshold: 0.1 });
+      entranceObserver.observe(section);
+    }
 
     // --- MOUSE PHYSICS & SPOTLIGHT TRACKING ---
     gsap.set([cursorDotRef.current, cursorRingRef.current], {
@@ -70,6 +76,8 @@ const Hero = () => {
     const yTilt = gsap.quickTo(card, "rotationX", { duration: 0.4, ease: "power3.out" });
     const glareX = gsap.quickTo(glareRef.current, "x", { duration: 0.3, ease: "power2.out" });
     const glareY = gsap.quickTo(glareRef.current, "y", { duration: 0.3, ease: "power2.out" });
+
+    const supportsFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
     const handleMouseMove = (e) => {
       const rect = section.getBoundingClientRect();
@@ -128,12 +136,14 @@ const Hero = () => {
       yTilt(0);
     };
 
-    section.addEventListener("mousemove", handleMouseMove);
-    section.addEventListener("mouseenter", handleMouseEnter);
-    section.addEventListener("mouseleave", handleMouseLeave);
+    if (supportsFinePointer) {
+      section.addEventListener("mousemove", handleMouseMove);
+      section.addEventListener("mouseenter", handleMouseEnter);
+      section.addEventListener("mouseleave", handleMouseLeave);
+    }
 
     return () => {
-      entranceObserver.disconnect();
+      entranceObserver?.disconnect();
       tl.kill();
       section.removeEventListener("mousemove", handleMouseMove);
       section.removeEventListener("mouseenter", handleMouseEnter);
@@ -145,7 +155,7 @@ const Hero = () => {
     <section
       id="home"
       ref={sectionRef}
-      className="relative w-full h-screen bg-[#050505] overflow-hidden flex flex-col justify-between select-none cursor-none"
+      className="relative w-full min-h-[100svh] lg:h-screen bg-[#050505] overflow-x-clip flex flex-col justify-start lg:justify-between select-none cursor-none"
     >
       <style>{`
         @keyframes marquee {
@@ -182,7 +192,7 @@ const Hero = () => {
       ></div>
 
       {/* 3. Main Content Layer */}
-      <div ref={contentRef} className="relative z-20 w-full max-w-7xl mx-auto px-6 md:px-12 h-full flex flex-col justify-between pt-24 pb-12">
+      <div ref={contentRef} className="relative z-20 w-full max-w-7xl mx-auto px-6 md:px-12 min-h-[100svh] lg:h-full flex flex-col justify-start gap-8 lg:gap-0 lg:justify-between pt-28 sm:pt-32 lg:pt-24 pb-10 lg:pb-12">
         
         {/* Top Netflix Cinematic Badge */}
         <div className="hero-anim-item flex items-center justify-between w-full">
@@ -199,7 +209,7 @@ const Hero = () => {
         </div>
 
         {/* Main Center Cinematic Stage Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 my-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:my-auto">
           
           {/* Left Side: Developer Story & Description */}
           <div className="lg:col-span-5 flex flex-col items-start space-y-5 text-left">
@@ -229,7 +239,7 @@ const Hero = () => {
             </p>
 
             {/* Action Button Set */}
-            <div className="hero-anim-item flex items-center gap-4 pt-2">
+            <div className="hero-anim-item flex flex-wrap items-center gap-3 pt-2">
               <a
                 href="#projects"
                 className="px-8 py-3.5 bg-white text-black font-bold text-xs uppercase tracking-widest rounded hover:bg-red-600 hover:text-white transition-all duration-300 shadow-[0_10px_35px_rgba(255,255,255,0.3)] flex items-center gap-2 hover:scale-105 active:scale-95"
@@ -254,7 +264,7 @@ const Hero = () => {
           </div>
 
           {/* Center: Interactive 3D Holographic Tilt Developer Poster Frame */}
-          <div className="lg:col-span-4 flex justify-center perspective-[1200px]">
+          <div className="lg:col-span-4 flex justify-center perspective-[1200px] min-w-0">
             <div 
               ref={cardRef}
               className="relative group transform-gpu transition-transform duration-100 ease-out will-change-transform"
@@ -263,7 +273,7 @@ const Hero = () => {
               <div className="absolute -inset-3 bg-gradient-to-r from-red-600/70 via-rose-600/40 to-purple-600/20 rounded-3xl blur-3xl opacity-90 group-hover:opacity-100 animate-pulse duration-1000"></div>
               
               {/* Poster Card with Glossy Sheen */}
-              <div className="relative w-[280px] md:w-[320px] p-3.5 bg-[#141414]/90 backdrop-blur-2xl rounded-2xl border border-red-600/40 shadow-[0_40px_80px_rgba(0,0,0,0.95)] overflow-hidden">
+              <div className="relative w-full max-w-[280px] md:max-w-[320px] p-3.5 bg-[#141414]/90 backdrop-blur-2xl rounded-2xl border border-red-600/40 shadow-[0_40px_80px_rgba(0,0,0,0.95)] overflow-hidden">
                 
                 {/* Dynamic Specular Glare Layer */}
                 <div 
@@ -279,7 +289,7 @@ const Hero = () => {
                 <img
                   src={harshaPortrait}
                   alt="Harshavardhan Babu Dasari"
-                  className="w-full h-[330px] md:h-[390px] rounded-xl object-cover object-center brightness-105 group-hover:scale-[1.02] transition-transform duration-500"
+                  className="w-full h-[300px] sm:h-[330px] md:h-[390px] rounded-xl object-cover object-center brightness-105 group-hover:scale-[1.02] transition-transform duration-500"
                   loading="eager"
                   decoding="async"
                 />
@@ -318,11 +328,11 @@ const Hero = () => {
       ></div>
 
       {/* --- NETFLIX-THEMED DEVELOPER NAVBAR --- */}
-      <header className="absolute top-0 left-0 z-50 w-full max-w-7xl mx-auto px-6 md:px-6 lg:px-12 py-6 flex items-center justify-between pointer-events-auto">
+      <header className="absolute top-0 left-0 z-50 w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-12 py-4 md:py-6 flex items-center justify-between gap-2 pointer-events-auto">
         <div className="text-2xl font-black text-red-600 tracking-tighter flex items-center gap-2 drop-shadow-[0_2px_15px_rgba(229,9,20,0.9)]">
           HARSHA<span className="w-1.5 h-1.5 rounded-full bg-white inline-block"></span>
         </div>
-        <nav className="hidden md:flex items-center gap-8 text-xs font-mono uppercase tracking-widest text-white/80">
+        <nav className="hidden lg:flex items-center gap-8 text-xs font-mono uppercase tracking-widest text-white/80">
           <a href="#home" className="hover:text-red-500 transition-colors">Home</a>
           <a href="#about" className="hover:text-red-500 transition-colors">About</a>
           <a href="#expertise" className="hover:text-red-500 transition-colors">Expertise</a>
@@ -331,12 +341,34 @@ const Hero = () => {
           <a href="#experience" className="hover:text-red-500 transition-colors">Experience</a>
           <a href="#contact" className="hover:text-red-500 transition-colors">Contact</a>
         </nav>
+        <button
+          type="button"
+          aria-expanded={mobileNavOpen}
+          aria-controls="mobile-section-navigation"
+          onClick={() => setMobileNavOpen((open) => !open)}
+          className="lg:hidden min-h-11 px-3 rounded border border-white/20 bg-black/70 text-[10px] font-mono uppercase tracking-widest text-white/80"
+        >
+          Sections
+        </button>
         <a
           href="#contact"
-          className="px-5 py-2 rounded bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(229,9,20,0.6)] hover:scale-105 active:scale-95"
+          className="min-h-11 px-3 sm:px-5 py-2 rounded bg-red-600 hover:bg-red-700 text-white font-bold text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 shadow-[0_0_20px_rgba(229,9,20,0.6)] hover:scale-105 active:scale-95 inline-flex items-center"
         >
           Hire Me
         </a>
+        {mobileNavOpen && (
+          <nav id="mobile-section-navigation" aria-label="Mobile section navigation" className="absolute top-full left-4 right-4 grid grid-cols-2 gap-1 rounded-lg border border-white/15 bg-[#101010]/95 p-2 shadow-2xl backdrop-blur-xl lg:hidden">
+            {[
+              ['Home', '#home'], ['About', '#about'], ['Expertise', '#expertise'],
+              ['Skills', '#skills'], ['Projects', '#projects'], ['Experience', '#experience'],
+              ['Contact', '#contact']
+            ].map(([label, href]) => (
+              <a key={href} href={href} onClick={() => setMobileNavOpen(false)} className="min-h-11 flex items-center rounded px-3 text-xs font-mono uppercase tracking-wider text-white/75 hover:bg-red-600/15 hover:text-white">
+                {label}
+              </a>
+            ))}
+          </nav>
+        )}
       </header>
     </section>
   );

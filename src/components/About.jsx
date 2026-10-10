@@ -42,29 +42,32 @@ const About = () => {
 
   useEffect(() => {
     const section = sectionRef.current;
-    if (!section) return;
-
-    // --- Cinematic Stagger Entrance on Scroll ---
-    gsap.fromTo(
-      cardRefs.current,
-      { y: 80, opacity: 0, scale: 0.95 },
-      {
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power4.out",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 70%",
-          toggleActions: "play none none reverse"
-        }
-      }
-    );
-
-    // --- Interactive Magnetic Mouse Spotlight per Bento Card ---
     const cards = cardRefs.current;
+    if (!section || !cards.length) return;
+
+    const context = gsap.context(() => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      gsap.fromTo(
+        cards,
+        { y: 80, opacity: 0, scale: 0.95 },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 1,
+          stagger: 0.2,
+          ease: "power4.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 70%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+    }, section);
+
+    const removeListeners = [];
     const handleMouseMove = (e, card) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -73,12 +76,19 @@ const About = () => {
       card.style.setProperty('--mouse-y', `${y}px`);
     };
 
-    cards.forEach((card) => {
-      if (!card) return;
-      const listener = (e) => handleMouseMove(e, card);
-      card.addEventListener('mousemove', listener);
-      return () => card.removeEventListener('mousemove', listener);
-    });
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      cards.forEach((card) => {
+        if (!card) return;
+        const listener = (e) => handleMouseMove(e, card);
+        card.addEventListener('mousemove', listener);
+        removeListeners.push(() => card.removeEventListener('mousemove', listener));
+      });
+    }
+
+    return () => {
+      removeListeners.forEach((removeListener) => removeListener());
+      context.revert();
+    };
 
   }, []);
 
@@ -92,7 +102,7 @@ const About = () => {
     <section
       id="about"
       ref={sectionRef}
-      className="relative w-full min-h-screen bg-[#050505] text-white py-32 px-6 md:px-12 flex flex-col justify-center select-none overflow-hidden"
+      className="relative w-full min-h-[100svh] bg-[#050505] text-white py-20 md:py-32 px-6 md:px-12 flex flex-col justify-center overflow-hidden"
     >
       {/* Background Cinematic Red Ambient Glows */}
       <div className="absolute top-1/4 left-10 w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[160px] pointer-events-none"></div>

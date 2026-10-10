@@ -54,43 +54,47 @@ const Expertise = () => {
     const container = containerRef.current;
     if (!cards.length || !cardVisuals.length) return;
 
-    cards.forEach((card, index) => {
-      if (index === cards.length - 1) return; // Keep the top-most card fully focused
+    const context = gsap.context(() => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-      gsap.to(card, {
-        scale: 0.92 - index * 0.025,
-        y: -15 - index * 8,
-        filter: "blur(6px)",
-        opacity: 0.4,
-        scrollTrigger: {
-          trigger: card,
-          start: `top ${90 + index * 20}px`,
-          end: "bottom top",
-          scrub: true,
-        }
+      cards.forEach((card, index) => {
+        if (index === cards.length - 1) return;
+
+        gsap.to(card, {
+          scale: 0.92 - index * 0.025,
+          y: -15 - index * 8,
+          filter: "blur(6px)",
+          opacity: 0.4,
+          scrollTrigger: {
+            trigger: card,
+            start: `top ${90 + index * 20}px`,
+            end: "bottom top",
+            scrub: true,
+          }
+        });
       });
-    });
 
-    gsap.fromTo(
-      cardVisuals,
-      { y: 90, rotationX: -14, opacity: 0, filter: "blur(10px)", transformPerspective: 900 },
-      {
-        y: 0,
-        rotationX: 0,
-        opacity: 1,
-        filter: "blur(0px)",
-        duration: 0.8,
-        stagger: 0.12,
-        ease: "back.out(1.6)",
-        scrollTrigger: {
-          trigger: cards[0],
-          start: "top 78%",
-          toggleActions: "play none none reverse"
+      gsap.fromTo(
+        cardVisuals,
+        { y: 90, rotationX: -14, opacity: 0, filter: "blur(10px)", transformPerspective: 900 },
+        {
+          y: 0,
+          rotationX: 0,
+          opacity: 1,
+          filter: "blur(0px)",
+          duration: 0.8,
+          stagger: 0.12,
+          ease: "back.out(1.6)",
+          scrollTrigger: {
+            trigger: cards[0],
+            start: "top 78%",
+            toggleActions: "play none none reverse"
+          }
         }
-      }
-    );
+      );
+    }, container);
 
-    // Magnetic mouse highlight per card
+    const removeListeners = [];
     const handleMouseMove = (e, card) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -99,17 +103,18 @@ const Expertise = () => {
       card.style.setProperty('--mouse-y', `${y}px`);
     };
 
-    cards.forEach((card) => {
-      if (!card) return;
-      const listener = (e) => handleMouseMove(e, card);
-      card.addEventListener('mousemove', listener);
-      return () => card.removeEventListener('mousemove', listener);
-    });
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      cards.forEach((card) => {
+        if (!card) return;
+        const listener = (e) => handleMouseMove(e, card);
+        card.addEventListener('mousemove', listener);
+        removeListeners.push(() => card.removeEventListener('mousemove', listener));
+      });
+    }
 
     return () => {
-      ScrollTrigger.getAll().forEach((trigger) => {
-        if (cards.includes(trigger.trigger) || cardVisuals.includes(trigger.trigger) || trigger.trigger === container) trigger.kill();
-      });
+      removeListeners.forEach((removeListener) => removeListener());
+      context.revert();
     };
   }, []);
 
@@ -123,7 +128,7 @@ const Expertise = () => {
     <section
       id="expertise"
       ref={containerRef}
-      className="relative w-full bg-[#050505] text-white py-20 px-6 md:px-12 select-none overflow-hidden"
+      className="relative w-full bg-[#050505] text-white py-20 px-6 md:px-12 overflow-x-clip"
     >
       {/* Cinematic Red Ambient Glow */}
       <div className="absolute top-1/3 left-1/4 w-[450px] h-[450px] bg-red-600/10 rounded-full blur-[140px] pointer-events-none"></div>
@@ -157,10 +162,11 @@ const Expertise = () => {
             <div
               key={index}
               ref={addToRefs}
-              className="sticky w-full transform-gpu"
+              className="expertise-stack-card sticky w-full transform-gpu"
               style={{
                 zIndex: index + 1,
-                top: `${95 + index * 16}px`
+                top: `${95 + index * 16}px`,
+                '--stack-index': index
               }}
             >
               <div

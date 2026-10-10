@@ -53,7 +53,7 @@ const Projects = () => {
       gsap.set(folderFrontRef.current, { transformOrigin: "bottom center" });
       
       const getGridPos = (index) => {
-        if (projectsData.length === 1) return { row: 1, col: 1 };
+        if (projectsData.length <= 3) return { row: 1, col: index + (3 - projectsData.length) / 2 };
         let row, col;
         if (index < 3) { row = 0; col = index; }
         else if (index === 3) { row = 1; col = 0; }
@@ -61,6 +61,38 @@ const Projects = () => {
         else { row = 2; col = index - 5; }
         return { row, col };
       };
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        if (window.matchMedia('(min-width: 1280px)').matches) {
+          gsap.set(folderFrontRef.current, { rotationX: -130 });
+          cardsRef.current.forEach((card, index) => {
+            if (!card) return;
+            const width = card.offsetWidth || 360;
+            const height = card.offsetHeight || 240;
+            const { row, col } = getGridPos(index);
+            gsap.set(card, {
+              xPercent: -50,
+              yPercent: -50,
+              x: (col - 1) * (width + 40),
+              y: (row - 1) * (height + 40),
+              rotation: 0,
+              scale: 1,
+              opacity: 1,
+              zIndex: 70
+            });
+          });
+        } else {
+          if (folderFrontRef.current) folderFrontRef.current.style.display = 'none';
+          if (mobileCarouselRef.current) {
+            mobileCarouselRef.current.style.overflowX = 'auto';
+            mobileCarouselRef.current.style.pointerEvents = 'auto';
+          }
+          mobileCardsRef.current.forEach((card) => {
+            if (card) gsap.set(card, { x: 0, y: 0, scale: 1, opacity: 1, rotation: 0 });
+          });
+        }
+        return;
+      }
 
       cardsRef.current.forEach((card) => {
         gsap.set(card, {
@@ -76,8 +108,8 @@ const Projects = () => {
       let mm = gsap.matchMedia();
 
       mm.add({
-        isDesktop: "(min-width: 768px)",
-        isMobile: "(max-width: 767px)"
+        isDesktop: "(min-width: 1280px)",
+        isMobile: "(max-width: 1279px)"
       }, (context) => {
         let { isDesktop, isMobile } = context.conditions;
 
@@ -148,8 +180,8 @@ const Projects = () => {
         }
 
         if (isMobile) {
-          const cardW = window.innerWidth * 0.8;
-          const gap = 20;
+          const cardW = mobileCardsRef.current[0]?.offsetWidth || window.innerWidth * 0.78;
+          const gap = 24;
           
           mobileCardsRef.current.forEach((card, i) => {
             gsap.set(card, {
@@ -165,6 +197,12 @@ const Projects = () => {
             scrollTrigger: {
               trigger: containerRef.current,
               start: "top 60%",
+            },
+            onStart: () => {
+              if (mobileCarouselRef.current) {
+                mobileCarouselRef.current.style.overflowX = 'auto';
+                mobileCarouselRef.current.style.pointerEvents = 'auto';
+              }
             }
           });
 
@@ -207,7 +245,7 @@ const Projects = () => {
   }, []);
 
   return (
-    <section id="projects" ref={containerRef} className="bg-[#0b0b0b] min-h-[100svh] md:min-h-[170vh] relative font-sans overflow-x-clip text-white w-full flex items-center justify-center py-24 md:py-40 select-none">
+    <section id="projects" ref={containerRef} className="bg-[#0b0b0b] min-h-[100svh] xl:min-h-[170vh] relative font-sans overflow-x-clip text-white w-full flex items-center justify-center py-16 md:py-24 xl:py-40">
       
       {/* Background Netflix Cinematic Title Watermark */}
       <div className="absolute top-10 left-0 w-full flex items-start justify-center pointer-events-none z-0">
@@ -228,7 +266,7 @@ const Projects = () => {
           {/* Folder Back */}
           <div 
             ref={folderBackRef}
-            className="absolute w-[85vw] md:w-[32vw] max-w-[380px] aspect-video bg-[#141414] rounded-[24px] border border-red-600/40 shadow-[0_20px_50px_rgba(229,9,20,0.25)] flex items-center justify-center"
+            className="absolute w-[85vw] xl:w-[32vw] max-w-[380px] aspect-video bg-[#141414] rounded-[24px] border border-red-600/40 shadow-[0_20px_50px_rgba(229,9,20,0.25)] flex items-center justify-center"
             style={{ zIndex: 5 }}
           >
             <div className="absolute -top-6 left-6 w-32 h-8 bg-[#1f1f1f] rounded-t-xl border-t border-red-600/30" />
@@ -242,7 +280,7 @@ const Projects = () => {
             <div 
               key={i}
               ref={el => cardsRef.current[i] = el}
-              className="hidden md:block absolute w-[80vw] md:w-[33vw] max-w-[380px] aspect-[16/10] will-change-transform"
+              className="hidden xl:block absolute w-[80vw] xl:w-[33vw] max-w-[380px] aspect-[16/10] will-change-transform"
               style={{ zIndex: 10 + i }}
             >
               <div className="w-full h-full rounded-[24px] overflow-hidden border border-white/15 bg-[#141414]/95 backdrop-blur-2xl shadow-[0_25px_50px_rgba(0,0,0,0.9)] transition-all duration-500 group hover:scale-[1.04] hover:border-red-600 hover:shadow-[0_35px_80px_rgba(229,9,20,0.35)] hover:-translate-y-2 relative z-10 p-7 flex flex-col justify-between">
@@ -271,7 +309,7 @@ const Projects = () => {
                       href={project.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex mt-2 px-3 py-1.5 rounded bg-red-600 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-red-700 transition-colors"
+                      className="inline-flex min-h-11 mt-2 px-3 py-2 items-center rounded bg-red-600 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-red-700 transition-colors"
                     >
                       {project.actionLabel}
                     </a>
@@ -296,7 +334,7 @@ const Projects = () => {
           {/* Folder Front Flap */}
           <div 
             ref={folderFrontRef}
-            className="absolute w-[85vw] md:w-[32vw] max-w-[380px] aspect-video pointer-events-none will-change-transform"
+            className="absolute w-[85vw] xl:w-[32vw] max-w-[380px] aspect-video pointer-events-none will-change-transform"
             style={{ zIndex: 60 }}
           >
             <div className="absolute bottom-0 w-full h-[85%] bg-[#1c1c1c] rounded-b-[24px] rounded-t-md shadow-[0_-5px_20px_rgba(0,0,0,0.8)] flex flex-col justify-end p-6 border-t border-red-600/40">
@@ -310,7 +348,7 @@ const Projects = () => {
       {/* Mobile Swipeable Carousel */}
       <div 
         ref={mobileCarouselRef}
-        className="md:hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-auto py-12 flex items-center gap-6 px-[12.5vw] pointer-events-none z-[100] snap-x snap-mandatory overflow-x-hidden hide-scrollbar"
+        className="xl:hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen h-auto py-12 flex items-center gap-6 px-[12.5vw] pointer-events-none z-[100] snap-x snap-mandatory overflow-x-hidden hide-scrollbar"
       >
         <style>{`
           .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -320,7 +358,7 @@ const Projects = () => {
           <div 
             key={`mob-${i}`}
             ref={el => mobileCardsRef.current[i] = el}
-            className="shrink-0 w-[78vw] aspect-[16/11] snap-center will-change-transform relative z-10"
+            className="shrink-0 w-[78vw] h-[min(70svh,390px)] min-h-[300px] snap-center will-change-transform relative z-10"
           >
             <div className="w-full h-full rounded-[24px] overflow-hidden border border-white/15 bg-[#141414] p-6 flex flex-col justify-between shadow-[0_20px_40px_rgba(0,0,0,0.9)]">
               <div className="flex items-center justify-between">
@@ -337,7 +375,7 @@ const Projects = () => {
                     href={project.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex mt-1 px-3 py-1.5 rounded bg-red-600 text-white text-[9px] font-bold uppercase tracking-widest"
+                    className="inline-flex min-h-11 mt-1 px-3 py-2 items-center rounded bg-red-600 text-white text-[9px] font-bold uppercase tracking-widest"
                   >
                     {project.actionLabel}
                   </a>

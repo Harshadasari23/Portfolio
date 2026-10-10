@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useEffect } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import NetflixPreloader from './components/NetflixPreloader';
 import CustomCursor from './components/CustomCursor';
 import Hero from './components/Hero';
@@ -10,6 +13,8 @@ import Experience from './components/Experience';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ProfileChooser from './components/ProfileChooser';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const defaultSections = [
   <Hero key="hero" />,
@@ -48,8 +53,14 @@ const profileSections = {
 };
 
 function App() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    if (loading || profile === null) return;
+    const frame = requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => cancelAnimationFrame(frame);
+  }, [loading, profile]);
 
   return (
     <main className="bg-[#050505] min-h-screen text-white relative cursor-none selection:bg-red-600 selection:text-white">
